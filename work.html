@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Let's Work Together | Creative Hub</title>
+<style>
+  :root{
+    --black:#0D0D0D;
+    --charcoal:#2C2C2C;
+    --graphite:#5E5E5E;
+    --stone:#D9D9D9;
+    --mist:#F5F5F5;
+    --white:#FFFFFF;
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+    background:var(--white);
+    color:var(--black);
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:'Inter','Helvetica Neue',Arial,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1.05;}
+  a{color:inherit;text-decoration:none;}
+
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 48px;
+    background:rgba(255,255,255,.85);
+    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--stone);
+  }
+  .logo{font-weight:700;font-size:14px;letter-spacing:.02em;}
+  .back-link{font-size:14px;color:var(--charcoal);}
+  .back-link:hover{opacity:.6;}
+
+  /* ---------- TOP HEADER IMAGE ---------- */
+  .work-hero{
+    margin-top:70px;
+    height:46vh;
+    position:relative;
+    overflow:hidden;
+    background:var(--mist);
+  }
+  .work-hero img{width:100%;height:100%;object-fit:cover;display:block;}
+  .work-hero.placeholder{
+    display:flex;align-items:center;justify-content:center;
+    color:var(--graphite);font-size:13px;text-align:center;padding:24px;
+    border-bottom:1px dashed var(--stone);
+  }
+  .work-hero-caption{
+    position:absolute;bottom:0;left:0;right:0;
+    padding:32px 48px;
+    background:linear-gradient(to top, rgba(0,0,0,.55), transparent);
+    color:var(--white);
+  }
+  .work-hero-caption h1{
+    font-size:clamp(1.8rem,3.6vw,2.8rem);
+    opacity:0;transform:translateY(16px);
+    animation:reveal .9s var(--ease) .1s forwards;
+  }
+
+  @keyframes reveal{to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- FORM SECTION ---------- */
+  .form-wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:96px 24px 140px;
+  }
+  .form-intro{margin-bottom:64px;}
+  .form-intro p{
+    font-size:17px;color:var(--graphite);line-height:1.6;max-width:460px;
+  }
+
+  .field{
+    margin-bottom:44px;
+    opacity:0;
+    transform:translateY(16px);
+    animation:reveal .8s var(--ease) forwards;
+  }
+  .field:nth-child(1){animation-delay:.05s;}
+  .field:nth-child(2){animation-delay:.12s;}
+  .field:nth-child(3){animation-delay:.19s;}
+  .field:nth-child(4){animation-delay:.26s;}
+  .field:nth-child(5){animation-delay:.33s;}
+
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--charcoal);
+    margin-bottom:14px;
+  }
+  .field input[type="text"],
+  .field input[type="email"],
+  .field textarea{
+    width:100%;
+    border:none;
+    border-bottom:1px solid var(--stone);
+    background:transparent;
+    font-size:19px;
+    padding:10px 2px;
+    font-family:inherit;
+    color:var(--black);
+    transition:border-color .3s var(--ease);
+  }
+  .field input::placeholder,
+  .field textarea::placeholder{color:#a0a0a0;font-weight:300;}
+  .field input:focus,
+  .field textarea:focus{
+    outline:none;
+    border-bottom-color:var(--black);
+  }
+  .field textarea{resize:vertical;min-height:90px;line-height:1.6;}
+
+  .field select{
+    width:100%;
+    border:none;
+    border-bottom:1px solid var(--stone);
+    background:transparent;
+    font-size:19px;
+    padding:10px 2px;
+    font-family:inherit;
+    color:var(--black);
+    transition:border-color .3s var(--ease);
+    appearance:none;
+    -webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%235E5E5E' stroke-width='1.6' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 2px center;
+    cursor:pointer;
+  }
+  .field select:focus{outline:none;border-bottom-color:var(--black);}
+  .field select:invalid{color:#a0a0a0;}
+  .field select option{color:var(--black);}
+
+  /* ---------- SERVICE SELECTOR ---------- */
+  .service-tabs{
+    position:relative;
+    display:flex;
+    gap:4px;
+    border-bottom:1px solid var(--stone);
+    margin-bottom:28px;
+  }
+  .tab-btn{
+    position:relative;
+    background:none;
+    border:none;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:500;
+    color:var(--graphite);
+    padding:12px 4px;
+    margin-right:24px;
+    cursor:pointer;
+    transition:color .3s var(--ease);
+    white-space:nowrap;
+  }
+  .tab-btn.active{color:var(--black);font-weight:600;}
+  .tab-indicator{
+    position:absolute;
+    bottom:-1px;
+    height:2px;
+    background:var(--black);
+    border-radius:2px;
+    transition:left .35s var(--ease), width .35s var(--ease);
+  }
+
+  .service-panels{position:relative;min-height:auto;}
+  .service-panel{
+    display:none;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .service-panel.active{
+    display:flex;
+    animation:panelIn .45s var(--ease);
+  }
+  @keyframes panelIn{
+    from{opacity:0;transform:translateY(8px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  .chip{
+    border:1px solid var(--stone);
+    border-radius:100px;
+    padding:11px 18px;
+    font-size:14px;
+    cursor:pointer;
+    transition:background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .15s var(--ease);
+    user-select:none;
+  }
+  .chip:hover{border-color:var(--charcoal);transform:translateY(-1px);}
+  .chip.selected{
+    background:var(--black);
+    border-color:var(--black);
+    color:var(--white);
+  }
+  .chip.not-sure{
+    margin-top:16px;
+    display:inline-block;
+    border-style:dashed;
+    color:var(--graphite);
+  }
+  .chip.not-sure.selected{
+    border-style:solid;
+    color:var(--white);
+  }
+  .selected-count{
+    font-size:12px;
+    color:var(--graphite);
+    margin-top:16px;
+    min-height:16px;
+    transition:opacity .25s var(--ease);
+  }
+
+  .contact-toggle{
+    display:flex;gap:10px;margin-bottom:16px;
+  }
+  .contact-toggle button{
+    flex:1;
+    padding:12px;
+    border:1px solid var(--stone);
+    background:transparent;
+    border-radius:8px;
+    font-size:14px;
+    cursor:pointer;
+    transition:all .25s var(--ease);
+    font-family:inherit;
+  }
+  .contact-toggle button.active{
+    background:var(--black);
+    color:var(--white);
+    border-color:var(--black);
+  }
+
+  .submit-btn{
+    width:100%;
+    background:var(--black);
+    color:var(--white);
+    border:none;
+    padding:18px;
+    border-radius:100px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform .25s var(--ease), background .25s;
+    margin-top:24px;
+    opacity:0;
+    transform:translateY(16px);
+    animation:reveal .8s var(--ease) .4s forwards;
+  }
+  .submit-btn:hover{transform:translateY(-2px);}
+  .submit-btn:active{transform:translateY(0);}
+
+  .success-message{
+    display:none;
+    text-align:center;
+    padding:80px 24px;
+  }
+  .success-message.show{display:block;}
+  .success-message h2{font-size:clamp(1.8rem,3.6vw,2.6rem);margin-bottom:16px;}
+  .success-message p{color:var(--graphite);font-size:16px;}
+
+  footer{
+    background:var(--black);color:var(--stone);
+    padding:32px 48px;text-align:center;font-size:12px;
+  }
+
+  @media (max-width:640px){
+    header{padding:18px 22px;}
+    .work-hero{margin-top:64px;height:38vh;}
+    .work-hero-caption{padding:22px;}
+    .form-wrap{padding:64px 20px 100px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">CREATIVE HUB</div>
+  <a href="index.html" class="back-link">← Back</a>
+</header>
+
+<div class="work-hero">
+  <img src="assets/work-header.jpg" alt="">
+  <div class="work-hero-caption">
+    <h1 class="display">Let's build something worth showing up for.</h1>
+  </div>
+</div>
+
+<div class="form-wrap">
+
+  <div id="formView">
+    <div class="form-intro">
+      <p>Tell us a little about what you need. We reply within one business day.</p>
+    </div>
+
+    <form id="workForm" name="work-with-us" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="work-with-us">
+      <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+      <div class="field">
+        <label for="name">What's your name?</label>
+        <input type="text" id="name" name="name" placeholder="e.g Don Doe" required>
+      </div>
+
+      <div class="field">
+        <label for="brand">What's your brand or business name?</label>
+        <input type="text" id="brand" name="brand" placeholder="e.g Creative Hub" required>
+      </div>
+
+      <div class="field services-field">
+        <label>What do you need help with?</label>
+
+        <div class="service-tabs" id="serviceTabs">
+          <button type="button" class="tab-btn active" data-cat="design">Design &amp; Identity</button>
+          <button type="button" class="tab-btn" data-cat="content">Content &amp; Writing</button>
+          <button type="button" class="tab-btn" data-cat="studio">Studio</button>
+          <span class="tab-indicator"></span>
+        </div>
+
+        <div class="service-panels">
+          <div class="service-panel active" data-panel="design">
+            <div class="chip" data-value="Brand Strategy">Brand Strategy</div>
+            <div class="chip" data-value="Logo Design">Logo Design</div>
+            <div class="chip" data-value="Brand Guidelines">Brand Guidelines</div>
+            <div class="chip" data-value="Graphic Design">Graphic Design</div>
+            <div class="chip" data-value="Packaging Design">Packaging Design</div>
+            <div class="chip" data-value="Print Design">Print Design</div>
+            <div class="chip" data-value="Web Management">Web Management</div>
+          </div>
+          <div class="service-panel" data-panel="content">
+            <div class="chip" data-value="Copywriting">Copywriting</div>
+            <div class="chip" data-value="Content Strategy">Content Strategy</div>
+            <div class="chip" data-value="Content Creation">Content Creation</div>
+            <div class="chip" data-value="Social Media Management">Social Media Management</div>
+            <div class="chip" data-value="Community Management">Community Management</div>
+            <div class="chip" data-value="Brand Campaigns">Brand Campaigns</div>
+          </div>
+          <div class="service-panel" data-panel="studio">
+            <div class="chip" data-value="Product Photography">Product Photography</div>
+            <div class="chip" data-value="Photography">Photography</div>
+            <div class="chip" data-value="Video Production">Video Production</div>
+            <div class="chip" data-value="Commercial Shoots">Commercial Shoots</div>
+            <div class="chip" data-value="Video Editing">Video Editing</div>
+          </div>
+          <div class="chip not-sure" data-value="Not sure yet">Not sure yet</div>
+        </div>
+        <div class="selected-count" id="selectedCount"></div>
+
+        <input type="hidden" name="services" id="servicesHidden" required>
+      </div>
+
+      <div class="field">
+        <label for="details">How can we help you?</label>
+        <textarea id="details" name="details" placeholder="Tell us a bit about the project" required></textarea>
+      </div>
+
+      <div class="field">
+        <label>Where can we reach you?</label>
+        <div class="contact-toggle" id="contactToggle">
+          <button type="button" class="active" data-mode="email">Email</button>
+          <button type="button" data-mode="whatsapp">WhatsApp</button>
+        </div>
+        <input type="email" id="contact" name="contact" placeholder="e.g jane@email.com" required>
+      </div>
+
+      <button type="submit" class="submit-btn">Let's build together</button>
+    </form>
+  </div>
+
+  <div class="success-message" id="successView">
+    <h2 class="display">Message received.</h2>
+    <p>We'll be in touch shortly.</p>
+  </div>
+
+</div>
+
+<footer>
+  Copyright © 2026 Creative Hub. All rights reserved.
+</footer>
+
+<script>
+  // Service tabs
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.service-panel');
+  const indicator = document.querySelector('.tab-indicator');
+
+  function moveIndicator(btn){
+    indicator.style.width = btn.offsetWidth + 'px';
+    indicator.style.left = btn.offsetLeft + 'px';
+  }
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      moveIndicator(btn);
+      const cat = btn.dataset.cat;
+      panels.forEach(p => p.classList.toggle('active', p.dataset.panel === cat));
+    });
+  });
+  window.addEventListener('load', () => moveIndicator(document.querySelector('.tab-btn.active')));
+  window.addEventListener('resize', () => moveIndicator(document.querySelector('.tab-btn.active')));
+
+  // Chip selection (multi-select across all categories)
+  const chips = document.querySelectorAll('.chip');
+  const servicesHidden = document.getElementById('servicesHidden');
+  const selectedCount = document.getElementById('selectedCount');
+  let selected = [];
+
+  function updateCount(){
+    if(selected.length === 0){
+      selectedCount.textContent = '';
+    }else{
+      selectedCount.textContent = selected.length + (selected.length === 1 ? ' service selected' : ' services selected');
+    }
+    servicesHidden.value = selected.join(', ');
+  }
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const val = chip.dataset.value;
+      if(chip.classList.contains('selected')){
+        chip.classList.remove('selected');
+        selected = selected.filter(s => s !== val);
+      }else{
+        chip.classList.add('selected');
+        selected.push(val);
+      }
+      updateCount();
+    });
+  });
+
+  // Email / WhatsApp toggle
+  const contactInput = document.getElementById('contact');
+  document.querySelectorAll('#contactToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#contactToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.dataset.mode;
+      if(mode === 'email'){
+        contactInput.type = 'email';
+        contactInput.placeholder = 'e.g jane@email.com';
+      }else{
+        contactInput.type = 'text';
+        contactInput.placeholder = 'e.g +234 801 234 5678';
+      }
+    });
+  });
+
+  // Netlify handles the actual POST on submit (data-netlify="true").
+  // This just shows a friendly success state without a full page reload,
+  // if you want the classic Netlify redirect-to-thank-you-page flow instead,
+  // remove this script block and set an action="/thank-you.html" on the form.
+  const form = document.getElementById('workForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const data = new FormData(form);
+    fetch('/', {
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: new URLSearchParams(data).toString()
+    }).then(() => {
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('successView').classList.add('show');
+    }).catch(() => {
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('successView').classList.add('show');
+    });
+  });
+</script>
+
+</body>
+</html>
