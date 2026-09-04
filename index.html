@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Hub | Confidence Through Simplicity</title>
+<style>
+  :root{
+    --black:#0D0D0D;
+    --charcoal:#2C2C2C;
+    --graphite:#5E5E5E;
+    --stone:#D9D9D9;
+    --mist:#F5F5F5;
+    --white:#FFFFFF;
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+    background:var(--white);
+    color:var(--black);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* Satoshi isn't network-loadable in this preview. Swap the font-family below for Satoshi/Acumin when you wire this into the real build */
+  .display{
+    font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+    font-weight:700;
+    letter-spacing:-0.03em;
+    line-height:1.02;
+  }
+
+  a{color:inherit;text-decoration:none;}
+
+  ::selection{background:var(--black);color:var(--white);}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 48px;
+    background:rgba(255,255,255,0);
+    transition:background .4s var(--ease), padding .4s var(--ease), border-color .4s var(--ease);
+    border-bottom:1px solid transparent;
+  }
+  header.scrolled{
+    background:rgba(255,255,255,.85);
+    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(12px);
+    padding:16px 48px;
+    border-bottom:1px solid var(--stone);
+  }
+  .logo{font-weight:700;font-size:14px;letter-spacing:.02em;}
+  nav ul{list-style:none;display:flex;gap:36px;}
+  nav a{font-size:14px;color:var(--charcoal);transition:opacity .2s;}
+  nav a:hover{opacity:.55;}
+  .nav-links{display:flex;}
+  .cta-btn{
+    background:var(--black);
+    color:var(--white);
+    padding:10px 20px;
+    border-radius:100px;
+    font-size:13px;
+    transition:transform .25s var(--ease), background .25s;
+    display:inline-block;
+  }
+  .cta-btn:hover{transform:translateY(-2px);}
+  /* ---------- SERVICES OVERLAY ---------- */
+  .services-overlay{
+    position:fixed;
+    inset:0;
+    z-index:200;
+    background:rgba(13,13,13,.55);
+    -webkit-backdrop-filter:blur(4px);
+    backdrop-filter:blur(4px);
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .4s var(--ease), visibility .4s var(--ease);
+  }
+  .services-overlay.open{
+    opacity:1;
+    visibility:visible;
+  }
+  .services-panel{
+    position:absolute;
+    top:0;left:0;right:0;
+    background:var(--white);
+    padding:120px 48px 64px;
+    transform:translateY(-24px);
+    opacity:0;
+    transition:transform .5s var(--ease), opacity .5s var(--ease);
+    box-shadow:0 20px 60px rgba(0,0,0,.15);
+  }
+  .services-overlay.open .services-panel{
+    transform:translateY(0);
+    opacity:1;
+  }
+  .services-close{
+    position:absolute;
+    top:28px;right:48px;
+    background:none;
+    border:none;
+    font-size:18px;
+    cursor:pointer;
+    color:var(--graphite);
+    transition:transform .3s var(--ease), color .3s;
+  }
+  .services-close:hover{color:var(--black);transform:rotate(90deg);}
+
+  .services-step{display:none;max-width:720px;margin:0 auto;}
+  .services-step.active{display:block;}
+
+  /* Step 1: category cards */
+  .services-categories{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .category-card{
+    display:flex;
+    align-items:center;
+    gap:24px;
+    width:100%;
+    background:none;
+    border:none;
+    border-bottom:1px solid var(--stone);
+    padding:26px 4px;
+    cursor:pointer;
+    font-family:inherit;
+    text-align:left;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .4s var(--ease), transform .4s var(--ease), padding-left .3s var(--ease), background .3s var(--ease);
+  }
+  .services-overlay.open .category-card{opacity:1;transform:translateY(0);}
+  .category-card:nth-child(1){transition-delay:.05s;}
+  .category-card:nth-child(2){transition-delay:.1s;}
+  .category-card:nth-child(3){transition-delay:.15s;}
+  .category-card:hover{padding-left:14px;background:var(--mist);}
+  .category-num{
+    font-size:13px;
+    color:var(--graphite);
+    min-width:28px;
+  }
+  .category-name{
+    flex:1;
+    font-size:clamp(1.4rem,3vw,2rem);
+    font-weight:700;
+    letter-spacing:-0.02em;
+  }
+  .category-arrow{
+    font-size:18px;
+    color:var(--graphite);
+    transition:transform .3s var(--ease);
+  }
+  .category-card:hover .category-arrow{transform:translateX(6px);color:var(--black);}
+
+  /* Step 2: service list */
+  .services-back{
+    background:none;
+    border:none;
+    font-family:inherit;
+    font-size:14px;
+    color:var(--graphite);
+    cursor:pointer;
+    margin-bottom:32px;
+    transition:color .2s;
+  }
+  .services-back:hover{color:var(--black);}
+  .services-list-title{
+    font-size:clamp(1.6rem,3.4vw,2.4rem);
+    font-weight:700;
+    letter-spacing:-0.02em;
+    margin-bottom:32px;
+  }
+  .services-list{
+    display:flex;
+    flex-direction:column;
+  }
+  .services-list a{
+    display:block;
+    font-size:18px;
+    color:var(--black);
+    padding:16px 4px;
+    border-bottom:1px solid var(--stone);
+    opacity:0;
+    transform:translateX(-10px);
+    transition:opacity .35s var(--ease), transform .35s var(--ease), color .2s, padding-left .3s var(--ease);
+  }
+  .services-step-list.active a{opacity:1;transform:translateX(0);}
+  .services-list a:nth-child(1){transition-delay:.04s;}
+  .services-list a:nth-child(2){transition-delay:.08s;}
+  .services-list a:nth-child(3){transition-delay:.12s;}
+  .services-list a:nth-child(4){transition-delay:.16s;}
+  .services-list a:nth-child(5){transition-delay:.2s;}
+  .services-list a:nth-child(6){transition-delay:.24s;}
+  .services-list a:nth-child(7){transition-delay:.28s;}
+  .services-list a:hover{color:var(--graphite);padding-left:10px;}
+
+  @media (max-width:860px){
+    .services-panel{padding:100px 22px 48px;}
+    .services-close{top:20px;right:22px;}
+    .category-card{padding:20px 2px;gap:16px;}
+  }
+
+  .menu-toggle{display:none;background:none;border:none;cursor:pointer;padding:4px;z-index:110;position:relative;}
+  .menu-toggle span{display:block;width:22px;height:2px;background:var(--black);margin:5px 0;transition:transform .3s var(--ease), opacity .3s var(--ease);}
+  .menu-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .menu-toggle.open span:nth-child(2){opacity:0;}
+  .menu-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  .mobile-menu{
+    display:none;
+    position:fixed;
+    top:0;right:0;
+    width:70%;
+    max-width:320px;
+    height:100vh;
+    background:var(--white);
+    z-index:99;
+    padding:120px 32px 32px;
+    transform:translateX(100%);
+    transition:transform .4s var(--ease);
+    box-shadow:-8px 0 24px rgba(0,0,0,.06);
+  }
+  .mobile-menu.open{transform:translateX(0);}
+  .mobile-menu ul{list-style:none;display:flex;flex-direction:column;gap:28px;}
+  .mobile-menu a{font-size:20px;font-weight:600;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    padding:0 48px;
+    position:relative;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    align-items:center;
+    width:100%;
+    padding-top:80px;
+  }
+  .hero-copy{max-width:520px;}
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    color:var(--graphite);
+    margin-bottom:22px;
+    opacity:0;
+    transform:translateY(10px);
+    animation:reveal .8s var(--ease) .1s forwards;
+  }
+  .hero h1{
+    font-size:clamp(2.4rem,4.6vw,4.2rem);
+    margin-bottom:24px;
+    opacity:0;
+    transform:translateY(18px);
+    animation:reveal .9s var(--ease) .25s forwards;
+  }
+  .hero-support{
+    font-size:18px;
+    color:var(--graphite);
+    margin-bottom:14px;
+    opacity:0;
+    transform:translateY(14px);
+    animation:reveal .9s var(--ease) .4s forwards;
+  }
+  .hero p{
+    font-size:17px;
+    line-height:1.6;
+    color:var(--graphite);
+    margin-bottom:32px;
+    max-width:400px;
+    opacity:0;
+    transform:translateY(14px);
+    animation:reveal .9s var(--ease) .45s forwards;
+  }
+  .hero-cta{
+    opacity:0;
+    transform:translateY(14px);
+    animation:reveal .9s var(--ease) .6s forwards;
+  }
+  .hero-cta a{
+    font-size:15px;
+    font-weight:600;
+    border-bottom:1px solid var(--black);
+    padding-bottom:2px;
+  }
+  .hero-image{
+    position:relative;
+    border-radius:2px;
+    overflow:hidden;
+    opacity:0;
+    transform:scale(1.04);
+    animation:revealImg 1.3s var(--ease) .15s forwards;
+  }
+  .hero-image img{
+    width:100%;height:auto;display:block;object-fit:contain;
+  }
+
+  @keyframes reveal{to{opacity:1;transform:translateY(0);}}
+  @keyframes revealImg{to{opacity:1;transform:scale(1);}}
+
+  /* ---------- HUB SECTIONS ---------- */
+  .hub{
+    padding:140px 48px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:64px;
+    align-items:center;
+  }
+  .hub.dark{background:var(--black);color:var(--white);}
+  .hub.light{background:var(--white);color:var(--black);}
+  .hub-copy .num{
+    display:flex;align-items:center;gap:14px;
+    font-size:13px;color:var(--graphite);margin-bottom:26px;
+  }
+  .hub.dark .hub-copy .num{color:#8a8a8a;}
+  .hub-copy .num .line{width:36px;height:1px;background:currentColor;opacity:.5;}
+  .hub-copy h2{
+    font-size:clamp(2.2rem,4vw,3.4rem);
+    margin-bottom:20px;
+  }
+  .hub-copy p{
+    font-size:16px;
+    line-height:1.6;
+    color:var(--graphite);
+    max-width:340px;
+    margin-bottom:28px;
+  }
+  .hub.dark .hub-copy p{color:#a8a8a8;}
+  .hub-copy .explore{
+    font-size:14px;font-weight:600;
+    border-bottom:1px solid currentColor;
+    padding-bottom:2px;
+  }
+  .hub-visual{
+    border-radius:2px;
+    overflow:hidden;
+    position:relative;
+  }
+  .hub-visual img{
+    width:100%;height:auto;display:block;object-fit:contain;
+    transform:scale(1.08);
+    transition:transform 1.4s var(--ease);
+  }
+  .hub.reveal .hub-visual img{transform:scale(1);}
+
+  .hub-visual.placeholder{
+    background:var(--mist);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--graphite);
+    font-size:13px;
+    text-align:center;
+    padding:24px;
+    border:1px dashed var(--stone);
+  }
+  .hub.dark .hub-visual.placeholder{background:#1a1a1a;border-color:#333;color:#777;}
+
+  .hub-tags{
+    grid-column:1 / -1;
+    display:flex;
+    gap:48px;
+    flex-wrap:wrap;
+    margin-top:56px;
+    padding-top:32px;
+    border-top:1px solid var(--stone);
+  }
+  .hub.dark .hub-tags{border-top-color:#2a2a2a;}
+  .hub-tags .tag{font-size:13px;}
+  .hub-tags .tag .n{display:block;color:var(--graphite);margin-top:4px;font-size:12px;}
+  .hub.dark .hub-tags .n{color:#777;}
+
+  /* fade-in on scroll, one type of motion, used consistently */
+  .hub{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .9s var(--ease), transform .9s var(--ease);
+  }
+  .hub.reveal{opacity:1;transform:translateY(0);}
+
+  /* ---------- CTA ---------- */
+  .closing-cta{
+    padding:140px 48px;
+    background:var(--mist);
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:40px;
+    align-items:end;
+  }
+  .closing-cta h2{
+    font-size:clamp(2rem,4vw,3rem);
+  }
+  .closing-cta .side p{
+    font-size:16px;color:var(--graphite);margin-bottom:16px;line-height:1.6;
+  }
+  .closing-cta .side a{font-weight:600;border-bottom:1px solid var(--black);padding-bottom:2px;}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    background:var(--black);
+    color:var(--stone);
+    padding:48px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:24px;
+    font-size:13px;
+  }
+  footer .logo{color:var(--white);}
+  footer nav ul{gap:28px;}
+  footer nav a{color:var(--stone);}
+  .social{display:flex;gap:18px;}
+
+  .meta-strip{
+    padding:32px 48px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:24px;
+    border-top:1px solid #f0f0f0;
+    font-size:13px;
+    color:var(--graphite);
+  }
+  .meta-strip .type-sample{font-size:26px;color:var(--black);font-weight:700;}
+  .palette{display:flex;gap:10px;align-items:center;}
+  .swatch{width:26px;height:26px;border-radius:50%;border:1px solid var(--stone);}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+  }
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width:860px){
+    header{padding:18px 22px;}
+    header.scrolled{padding:14px 22px;}
+    .nav-links{display:none;}
+    .menu-toggle{display:block;}
+    .mobile-menu{display:block;}
+    .hero{padding:0 22px;}
+    .hero-grid{grid-template-columns:1fr;gap:36px;padding-top:110px;}
+    .hero-image{order:-1;}
+    .hero-copy{max-width:100%;}
+    .hub{grid-template-columns:1fr;padding:80px 22px;gap:28px;}
+    .hub-tags{gap:24px 32px;margin-top:36px;padding-top:24px;}
+    .closing-cta{grid-template-columns:1fr;padding:80px 22px;gap:28px;}
+    footer{padding:32px 22px;flex-direction:column;align-items:flex-start;}
+    .meta-strip{padding:28px 22px;flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<header id="header">
+  <div class="logo">CREATIVE HUB</div>
+  <nav class="nav-links">
+    <ul>
+      <li><a href="#">Work</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#" id="servicesNavTrigger">Services</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+  <a href="work.html" class="cta-btn">Let's work together →</a>
+  <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+</header>
+
+<div class="services-overlay" id="servicesOverlay">
+  <div class="services-panel">
+    <button class="services-close" id="servicesClose" aria-label="Close">✕</button>
+
+    <!-- STEP 1: Category picker -->
+    <div class="services-step services-step-categories active" id="stepCategories">
+      <div class="services-categories">
+        <button type="button" class="category-card" data-cat="design">
+          <span class="category-num">01</span>
+          <span class="category-name">Design &amp; Identity</span>
+          <span class="category-arrow">→</span>
+        </button>
+        <button type="button" class="category-card" data-cat="content">
+          <span class="category-num">02</span>
+          <span class="category-name">Content &amp; Writing</span>
+          <span class="category-arrow">→</span>
+        </button>
+        <button type="button" class="category-card" data-cat="studio">
+          <span class="category-num">03</span>
+          <span class="category-name">Studio</span>
+          <span class="category-arrow">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Service list per category -->
+    <div class="services-step services-step-list" id="stepList">
+      <button type="button" class="services-back" id="servicesBack">← Back</button>
+      <div class="services-list-title" id="servicesListTitle"></div>
+      <div class="services-list" id="servicesList"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const SERVICE_DATA = {
+    design: {
+      title: "Design & Identity",
+      items: [
+        ["Brand Strategy", "brand-strategy.html"],
+        ["Logo Design", "logo-design.html"],
+        ["Brand Guidelines", "brand-guidelines.html"],
+        ["Graphic Design", "graphic-design.html"],
+        ["Packaging Design", "packaging-design.html"],
+        ["Print Design", "print-design.html"],
+        ["Web Management", "web-management.html"]
+      ]
+    },
+    content: {
+      title: "Content & Writing",
+      items: [
+        ["Copywriting", "copywriting.html"],
+        ["Content Strategy", "content-strategy.html"],
+        ["Content Creation", "content-creation.html"],
+        ["Social Media Management", "social-media-management.html"],
+        ["Community Management", "community-management.html"],
+        ["Brand Campaigns", "brand-campaigns.html"]
+      ]
+    },
+    studio: {
+      title: "Studio",
+      items: [
+        ["Product Photography", "product-photography.html"],
+        ["Photography", "photography.html"],
+        ["Video Production", "video-production.html"],
+        ["Commercial Shoots", "commercial-shoots.html"],
+        ["Video Editing", "video-editing.html"]
+      ]
+    }
+  };
+</script>
+
+<nav class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="#" id="servicesNavTriggerMobile">Service</a></li>
+    <li><a href="#">Work</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <h1 class="display">Confidence through simplicity.</h1>
+      <p class="hero-support">Your brand, finally looking like itself.</p>
+      <p>Strategy, design, content and production, all in one place.</p>
+      <div class="hero-cta"><a href="work.html">Let's work together →</a></div>
+    </div>
+    <div class="hero-image">
+      <img src="hero.png" alt="">
+    </div>
+  </div>
+</section>
+
+<section id="services" class="hub dark" data-hub>
+  <div class="hub-copy">
+    <div class="num"><span>01</span><span class="line"></span><span>CREATIVE DESIGN</span></div>
+    <h2 class="display">We build how your brand looks.</h2>
+    <p>Identity, guidelines and the visual system that makes your brand instantly recognizable.</p>
+    <a href="#" class="explore">Explore chapter →</a>
+  </div>
+  <div class="hub-visual">
+    <img src="design.png" alt="">
+  </div>
+  <div class="hub-tags">
+    <div class="tag">Brand Strategy<span class="n">01</span></div>
+    <div class="tag">Logo Design<span class="n">02</span></div>
+    <div class="tag">Brand Guidelines<span class="n">03</span></div>
+    <div class="tag">Packaging Design<span class="n">04</span></div>
+    <div class="tag">Print Design<span class="n">05</span></div>
+    <div class="tag">Graphic Design<span class="n">06</span></div>
+  </div>
+</section>
+
+<section class="hub light" data-hub>
+  <div class="hub-copy">
+    <div class="num"><span>02</span><span class="line"></span><span>CONTENT</span></div>
+    <h2 class="display">We build what your brand says.</h2>
+    <p>Copy, strategy and content that sounds like you, everywhere your brand shows up.</p>
+    <a href="#" class="explore">Explore chapter →</a>
+  </div>
+  <div class="hub-visual">
+    <img src="content.png" alt="">
+  </div>
+  <div class="hub-tags">
+    <div class="tag">Copywriting<span class="n">01</span></div>
+    <div class="tag">Content Strategy<span class="n">02</span></div>
+    <div class="tag">Content Creation<span class="n">03</span></div>
+    <div class="tag">Social Media Management<span class="n">04</span></div>
+    <div class="tag">Community Management<span class="n">05</span></div>
+  </div>
+</section>
+
+<section class="hub dark" data-hub>
+  <div class="hub-copy">
+    <div class="num"><span>03</span><span class="line"></span><span>STUDIO</span></div>
+    <h2 class="display">We bring your brand to life.</h2>
+    <p>Photography and video production that gives your brand a face people remember.</p>
+    <a href="#" class="explore">Explore chapter →</a>
+  </div>
+  <div class="hub-visual">
+    <img src="studio.jpeg" alt="">
+  </div>
+  <div class="hub-tags">
+    <div class="tag">Product Photography<span class="n">01</span></div>
+    <div class="tag">Video Production<span class="n">02</span></div>
+    <div class="tag">Commercial Shoots<span class="n">03</span></div>
+    <div class="tag">Photography<span class="n">04</span></div>
+    <div class="tag">Video Editing<span class="n">05</span></div>
+  </div>
+</section>
+
+<section class="closing-cta">
+  <h2 class="display">Ready to show up differently?</h2>
+  <div class="side">
+    <p>Let's create the presence your brand deserves.</p>
+    <a href="work.html">Let's work together →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">CREATIVE HUB</div>
+  <nav>
+    <ul style="list-style:none;display:flex;gap:28px;">
+      <li><a href="#">Work</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Services</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="social">
+    <a href="https://www.instagram.com/creative_hub_media" target="_blank" rel="noopener">IG</a><a href="https://www.linkedin.com/company/growwithcreativehub/" target="_blank" rel="noopener">In</a>
+  </div>
+</footer>
+
+<div style="background:var(--black);color:#777;text-align:center;padding:0 48px 28px;font-size:12px;">
+  Copyright © 2026 Creative Hub. All rights reserved.
+</div>
+
+<script>
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuToggle.addEventListener('click', () => {
+    menuToggle.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      menuToggle.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+
+  const hubs = document.querySelectorAll('[data-hub]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('reveal');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.2});
+  hubs.forEach(h => io.observe(h));
+
+  // Services overlay panel
+  const servicesTrigger = document.getElementById('servicesNavTrigger');
+  const servicesTriggerMobile = document.getElementById('servicesNavTriggerMobile');
+  const servicesOverlay = document.getElementById('servicesOverlay');
+  const servicesClose = document.getElementById('servicesClose');
+  const stepCategories = document.getElementById('stepCategories');
+  const stepList = document.getElementById('stepList');
+  const servicesBack = document.getElementById('servicesBack');
+  const servicesListTitle = document.getElementById('servicesListTitle');
+  const servicesList = document.getElementById('servicesList');
+
+  function showCategoryStep(){
+    stepList.classList.remove('active');
+    stepCategories.classList.add('active');
+  }
+
+  function showListStep(catKey){
+    const data = SERVICE_DATA[catKey];
+    if(!data) return;
+    servicesListTitle.textContent = data.title;
+    servicesList.innerHTML = data.items.map(
+      ([name, href]) => `<a href="${href}">${name}</a>`
+    ).join('');
+    stepCategories.classList.remove('active');
+    stepList.classList.add('active');
+  }
+
+  document.querySelectorAll('.category-card').forEach(card => {
+    card.addEventListener('click', () => showListStep(card.dataset.cat));
+  });
+  servicesBack.addEventListener('click', showCategoryStep);
+
+  function openServices(e){
+    e.preventDefault();
+    menuToggle.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    showCategoryStep();
+    servicesOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeServices(){
+    servicesOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  servicesTrigger.addEventListener('click', openServices);
+  servicesTriggerMobile.addEventListener('click', openServices);
+  servicesClose.addEventListener('click', closeServices);
+  servicesOverlay.addEventListener('click', (e) => {
+    if(e.target === servicesOverlay) closeServices();
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') closeServices();
+  });
+</script>
+
+</body>
+</html>
