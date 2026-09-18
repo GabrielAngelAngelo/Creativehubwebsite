@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About | Creative Hub</title>
+<style>
+  :root{
+    --black:#0D0D0D;
+    --charcoal:#2C2C2C;
+    --graphite:#5E5E5E;
+    --stone:#D9D9D9;
+    --mist:#F5F5F5;
+    --white:#FFFFFF;
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter','Helvetica Neue',Arial,sans-serif;
+    background:var(--white);
+    color:var(--black);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .display{font-family:'Inter','Helvetica Neue',Arial,sans-serif;font-weight:700;letter-spacing:-0.03em;line-height:1.1;}
+  a{color:inherit;text-decoration:none;}
+
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 48px;
+    background:rgba(255,255,255,.85);
+    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--stone);
+  }
+  .logo-wrap{display:flex;align-items:center;gap:10px;}
+  .logo-wrap img{height:22px;width:auto;display:block;}
+  .logo-wrap span{font-weight:700;font-size:14px;letter-spacing:.02em;}
+  .back-link{font-size:14px;color:var(--charcoal);transition:opacity .2s;}
+  .back-link:hover{opacity:.6;}
+
+  section{
+    max-width:760px;
+    margin:0 auto;
+    padding:64px 24px;
+  }
+  .section-divider{
+    max-width:760px;
+    margin:0 auto;
+    border:none;
+    border-top:1px solid var(--stone);
+  }
+
+  .hero-about{padding-top:150px;padding-bottom:56px;}
+  .hero-about .eyebrow{
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--graphite);margin-bottom:20px;
+  }
+  .hero-about h1{
+    font-size:clamp(2rem,4.6vw,3rem);
+    margin-bottom:28px;
+  }
+  .hero-about p{
+    font-size:18px;line-height:1.7;color:var(--graphite);
+  }
+
+  .reveal-block{
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .8s var(--ease), transform .8s var(--ease);
+  }
+  .reveal-block.in{opacity:1;transform:translateY(0);}
+
+  h2{
+    font-size:clamp(1.5rem,3vw,2rem);
+    margin-bottom:20px;
+  }
+  section p{
+    font-size:16.5px;
+    line-height:1.75;
+    color:var(--graphite);
+    margin-bottom:14px;
+  }
+  section p:last-child{margin-bottom:0;}
+  section p.lead{
+    color:var(--black);
+    font-weight:500;
+    font-size:18px;
+  }
+
+  /* Values grid */
+  .values-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:28px;
+    margin-top:32px;
+  }
+  .value-card{
+    padding:24px 0;
+    border-top:1px solid var(--stone);
+  }
+  .value-icon{
+    width:36px;height:36px;margin-bottom:16px;
+    color:var(--black);
+  }
+  .value-num{font-size:12px;color:var(--graphite);margin-bottom:10px;letter-spacing:.06em;}
+  .value-card h3{font-size:17px;font-weight:600;margin-bottom:8px;}
+  .value-card p{font-size:14.5px;margin-bottom:0;}
+
+  /* Core values pills */
+  .values-pills{
+    display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;
+  }
+  .values-pills span{
+    border:1px solid var(--stone);
+    border-radius:100px;
+    padding:9px 18px;
+    font-size:14px;
+  }
+
+  /* Team section */
+  .team-section{max-width:1000px;}
+  .team-intro{max-width:760px;margin:0 auto 48px;padding:0 24px;}
+  .team-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:28px;
+    padding:0 24px;
+  }
+  .team-card{
+    opacity:0;
+    transform:translateY(60px) rotate(var(--rot,0deg));
+    transition:opacity .8s var(--ease), transform .8s var(--ease);
+  }
+  .team-card.in{
+    opacity:1;
+    transform:translateY(0) rotate(var(--rot,0deg));
+  }
+  .team-card:nth-child(1){--rot:-3deg;}
+  .team-card:nth-child(2){--rot:2deg;}
+  .team-card:nth-child(3){--rot:-2deg;}
+  .team-card:nth-child(4){--rot:3deg;}
+  .team-photo{
+    aspect-ratio:4/5;
+    width:100%;
+    overflow:hidden;
+    border-radius:4px;
+    box-shadow:0 16px 32px rgba(0,0,0,.12);
+    background:var(--mist);
+  }
+  .team-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .team-name{font-size:15px;font-weight:600;margin-top:16px;}
+  .team-role{font-size:13px;color:var(--graphite);margin-top:2px;}
+
+  .philosophy{
+    background:var(--black);
+    color:var(--white);
+    text-align:center;
+    padding:120px 24px;
+  }
+  .philosophy p{
+    font-size:clamp(1.4rem,3.4vw,2.2rem);
+    max-width:680px;
+    margin:0 auto 16px;
+    color:var(--white);
+    line-height:1.4;
+    font-weight:500;
+  }
+  .philosophy .tagline{
+    color:#999;
+    font-size:15px;
+    margin-top:36px;
+    margin-bottom:36px;
+  }
+  .philosophy .cta-btn{
+    display:inline-block;
+    background:var(--white);
+    color:var(--black);
+    padding:16px 30px;
+    border-radius:100px;
+    font-size:15px;
+    font-weight:600;
+    transition:transform .25s var(--ease);
+  }
+  .philosophy .cta-btn:hover{transform:translateY(-2px);}
+
+  footer{
+    background:var(--black);color:var(--stone);
+    padding:32px 48px;text-align:center;font-size:12px;
+  }
+
+  @media (max-width:760px){
+    header{padding:16px 22px;}
+    .hero-about{padding-top:110px;}
+    .team-grid{grid-template-columns:repeat(2,1fr);gap:20px;}
+    .values-grid{grid-template-columns:1fr;}
+    section{padding:48px 22px;}
+    .team-intro{padding:0 22px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo-wrap">
+    <img src="logo-black.png" alt="Creative Hub">
+    <span>CREATIVE HUB</span>
+  </a>
+  <a href="index.html" class="back-link">← Back</a>
+</header>
+
+<section class="hero-about reveal-block">
+  <div class="eyebrow">About Creative Hub</div>
+  <h1 class="display">Good businesses deserve brands that reflect how good they are.</h1>
+  <p>Creative Hub is a creative media brand helping businesses, entrepreneurs, and organizations build visibility, credibility, and sustainable growth through strategic creativity. We help brands communicate their value, show up professionally, and connect with the people they want to reach.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="reveal-block">
+  <h2 class="display">Why We Exist</h2>
+  <p>There's a gap between how good a business is and how people perceive it.</p>
+  <p>Many businesses are great at what they do, but don't always look, communicate, or show up online like the brands they aspire to become.</p>
+  <p class="lead">Creative Hub exists to close that gap.</p>
+  <p>We bring together creative thinking, design, content, and digital media to help businesses present themselves with clarity and confidence.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="reveal-block">
+  <h2 class="display">What We Believe</h2>
+  <p class="lead">Creativity should have a purpose.</p>
+  <p>Great creative isn't just about looking good. It should communicate clearly, capture attention, build credibility, and contribute to the growth of the business behind it.</p>
+  <p>That's why we approach every project with intention, combining creativity with a clear understanding of the brand, its audience, and its goals.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="reveal-block">
+  <h2 class="display">Our Promise</h2>
+  <p>We don't just create content.</p>
+  <p class="lead">We build brands that people trust, remember, and choose.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="reveal-block">
+  <h2 class="display">What Makes Creative Hub Different?</h2>
+  <p>We treat your brand like it matters.</p>
+
+  <div class="values-grid">
+    <div class="value-card">
+      <svg class="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="value-num">01</div>
+      <h3>Excellence</h3>
+      <p>We deliver with a consistent standard of quality.</p>
+    </div>
+    <div class="value-card">
+      <svg class="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-4.35-9.5-8.5C.8 8.7 2.6 5 6.2 5c2 0 3.3 1 3.8 2 .5-1 1.8-2 3.8-2 3.6 0 5.4 3.7 3.7 7.5C19 16.65 12 21 12 21z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="value-num">02</div>
+      <h3>Trust</h3>
+      <p>We build relationships through quality, reliability, and transparency.</p>
+    </div>
+    <div class="value-card">
+      <svg class="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a7 7 0 00-4 12.74V17a2 2 0 002 2h4a2 2 0 002-2v-2.26A7 7 0 0012 2z" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 21h6" stroke-linecap="round"/></svg>
+      <div class="value-num">03</div>
+      <h3>Strategic Creativity</h3>
+      <p>We believe creativity should solve a problem and serve a purpose.</p>
+    </div>
+    <div class="value-card">
+      <svg class="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 17l6-6 4 4 8-8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 7h7v7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="value-num">04</div>
+      <h3>Measurable Impact</h3>
+      <p>Our creative work should contribute to meaningful business outcomes.</p>
+    </div>
+    <div class="value-card">
+      <svg class="value-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3.2" stroke-linecap="round"/><circle cx="17" cy="9" r="2.6" stroke-linecap="round"/><path d="M2.5 20c.6-3.4 3-5.4 5.5-5.4S13 16.6 13.5 20" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 14.8c2 0 3.9 1.7 4.4 4.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="value-num">05</div>
+      <h3>Partnership</h3>
+      <p>We build long-term relationships, not transactional engagements.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="reveal-block">
+  <h2 class="display">Our Values</h2>
+  <div class="values-pills">
+    <span>Trust</span>
+    <span>Creativity</span>
+    <span>Excellence</span>
+    <span>Integrity</span>
+    <span>Innovation</span>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="reveal-block">
+  <h2 class="display">Our Vision</h2>
+  <p>To become a globally recognized creative media brand, trusted by businesses across continents and known for producing work that delivers measurable results.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="reveal-block">
+  <h2 class="display">Our Mission</h2>
+  <p>To empower brands through innovative creativity and professional media solutions that increase visibility, build credibility, and drive sustainable business growth.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="team-section reveal-block">
+  <div class="team-intro">
+    <h2 class="display">Meet the Team</h2>
+    <p>The people behind the work. Meet our team of creators, designers, and strategists working together to solve creative problems and help brands show up with confidence.</p>
+  </div>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-photo"><img src="founder.jpg" alt="Samuel Faniyan"></div>
+      <div class="team-name">Samuel Faniyan</div>
+      <div class="team-role">Co-Founder</div>
+    </div>
+    <div class="team-card">
+      <div class="team-photo"><img src="video-editor.jpg" alt="Gabriel Akinbola"></div>
+      <div class="team-name">Gabriel Akinbola</div>
+      <div class="team-role">Video Editor</div>
+    </div>
+    <div class="team-card">
+      <div class="team-photo"><img src="graphic-designer.jpg" alt="Samuel Ajibola"></div>
+      <div class="team-name">Samuel Ajibola</div>
+      <div class="team-role">Graphic Designer</div>
+    </div>
+    <div class="team-card">
+      <div class="team-photo"><img src="content-strategist.jpg" alt="Racheal Olalekan"></div>
+      <div class="team-name">Racheal Olalekan</div>
+      <div class="team-role">Content Strategist</div>
+    </div>
+  </div>
+</section>
+
+<div class="philosophy reveal-block">
+  <p>Great brands aren't remembered because they're louder.</p>
+  <p>They're remembered because they're clearer.</p>
+  <div class="tagline">Creative Hub exists to build brands that communicate with confidence, grow with purpose, and create lasting impact.</div>
+  <p style="font-size:1.3rem;margin-bottom:28px;">Ready to show up at your level?</p>
+  <a href="work.html" class="cta-btn">Let's work together →</a>
+</div>
+
+<footer>
+  Copyright &copy; 2026 Creative Hub. All rights reserved.
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal-block');
+  const teamCards = document.querySelectorAll('.team-card');
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.15});
+
+  revealEls.forEach(el => io.observe(el));
+
+  const teamIo = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if(e.isIntersecting){
+        setTimeout(() => e.target.classList.add('in'), i * 120);
+        teamIo.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.2});
+
+  teamCards.forEach(card => teamIo.observe(card));
+</script>
+
+</body>
+</html>
